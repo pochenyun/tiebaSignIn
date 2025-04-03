@@ -47,10 +47,12 @@ def login():
             login_cookie["STOKEN"] = req_stoken.cookies['STOKEN']
             # 带上login_cookie去签到
             run(login_cookie)
-        except:
-            pass
+        except KeyError as e:
+            logger.error(f"STOKEN在cookies里不存在: {e}")
+        except Exception as e:
+            logger.error(f"登录过程中出错: {e}")
     else:
-        print(req.status_code)
+        logger.info(f"错误码：{req.status_code}")
 
 
 # 获取关注贴吧页面页数
@@ -70,7 +72,6 @@ def get_favorite_page_num(cookie):
     # 获取最大的pn值，即尾页的数字
     if pn_nums:
         last_page = max(pn_nums)
-        logger.info(f'尾页的数字是: {str(last_page)}')
         return last_page
     else:
         logger.info('未找到尾页信息')
@@ -97,7 +98,6 @@ def get_favorite(cookie):
         favorite_page = []
         for tieba in tieba_list:
             favorite_page.append(tieba.find('a', class_=None).get('title'))
-        logger.info(f"在第{str(i)}页，获取到这些贴吧{favorite_page}")
         favorites.extend(favorite_page)
     return favorites
 
@@ -106,7 +106,7 @@ def get_favorite(cookie):
 def run(cookie):
     # 获取关注的吧
     favorites = get_favorite(cookie)
-    logger.info(f"签到开始，一共有{len(favorites)}页，{len(favorites)}个吧要签到！")
+    logger.info(f"签到开始！")
     counts = {success_flag: 0, fail_flag: 0}
     # 创建一个随机数生成器
     rand_gen = random.Random()
