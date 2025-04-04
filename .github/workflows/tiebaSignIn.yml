@@ -1,10 +1,10 @@
 name: Tieba Sign In
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+  # 北京时间 5:30 (UTC+8)
+  schedule:
+    - cron: '30 21 * * *'
 
 jobs:
   build:
