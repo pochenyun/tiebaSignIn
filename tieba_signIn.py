@@ -63,5 +63,5 @@ def client_sign(data, cookie):
         return signed_flag
     else:
         logger.info(f"{data.get("kw")}吧，签到失败！")
-        logger.info(f"失败错误码：{res['error_code']}，失败原因：{res['error_msg']}")
+        logger.info(f"失败原因：{str(res)}")
         return fail_flag
