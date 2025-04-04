@@ -55,7 +55,7 @@ def client_sign(data, cookie):
     # 带上参数对接口发起post请求，并将response处理成json格式
     res = requests.post(url=constant.sign_url, data=data, cookies=cookie, timeout=5).json()
     # 检查签到状态
-    if res['error_code'] == 0:
+    if res['error_code'] == 0 or 'user_info' in res:
         logger.info(f"{data.get("kw")}吧，签到成功！")
         return success_flag
     elif res['error_code'] == "160002":
