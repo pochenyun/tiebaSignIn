@@ -19,7 +19,7 @@ def sign(cookie, favorites):
     counts = {success_flag: 0, signed_flag: 0, fail_flag: 0}
     # 创建一个随机数生成器
     rand_gen = random.Random()
-    # 逐一签到，并停顿1.3-2.5秒
+    # 逐一签到，并停顿2-5秒
     for favorite in favorites:
         # 移动端md5加密后的十六进制处理
         sign_str = f"kw={favorite}tbs={tbs}tiebaclient!!!"
@@ -34,7 +34,7 @@ def sign(cookie, favorites):
         # 更新成功或失败计数
         counts[ret] = counts.get(ret) + 1
         # 生成随机休眠时间
-        time.sleep(rand_gen.uniform(1.3, 2.5))
+        time.sleep(rand_gen.uniform(2, 5))
     logger.info(f"签到成功贴吧数量：{counts[constant.success_flag]}, 签到失败贴吧数量：{counts[constant.fail_flag]}")
 
 
