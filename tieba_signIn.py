@@ -12,7 +12,7 @@ from logger import logger
 
 
 def sign(cookie, favorites):
-    def do_sign(fav_list, attempt):
+    def do_sign(fav_list, counts, attempt):
         retry_favorites = []
         for favorite in fav_list:
             sign_str = f"kw={favorite}tbs={tbs}tiebaclient!!!"
@@ -23,13 +23,14 @@ def sign(cookie, favorites):
                 "sign": sign_md5
             }
             ret = client_sign(data, cookie)
-            if ret == fail_flag:
+            if ret == success_flag:
+                counts = counts + 1
+            elif ret == fail_flag:
                 retry_favorites.append(favorite)
-            counts[ret] = counts.get(ret, 0) + 1
             time.sleep(rand_gen.uniform(0.3, 0.5))
         if retry_favorites and attempt < constant.attempt_total:
             logger.info(f"第{attempt + 1}次重试 {len(retry_favorites)} 个失败的贴吧")
-            do_sign(retry_favorites, attempt + 1)
+            do_sign(retry_favorites, counts, attempt + 1)
         # 缓一下重连
         time.sleep(rand_gen.uniform(5, 10))
 
@@ -37,12 +38,13 @@ def sign(cookie, favorites):
     tbs = get_tbs(cookie)
     # 签到开始
     logger.info(f"签到开始，一共有{len(favorites)}页，{len(favorites)}个吧要签到！")
-    counts = {success_flag: 0, signed_flag: 0, fail_flag: 0}
+    success_counts = 0
     # 创建一个随机数生成器
     rand_gen = random.Random()
     # 逐一签到，并停顿0.3-0.5秒
-    do_sign(favorites, 1)
-    logger.info(f"签到成功贴吧数量：{counts[constant.success_flag]}, 签到失败贴吧数量：{counts[constant.fail_flag]}")
+    do_sign(favorites, success_counts, 1)
+    logger.info(f"{constant.GREEN}签到成功贴吧数量：{success_counts}{constant.RESET}, "
+                f"{constant.RED}签到失败贴吧数量：{tbs.count() - success_counts}{constant.RESET}")
 
 
 # 获取tbs

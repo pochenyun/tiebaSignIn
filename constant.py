@@ -15,3 +15,7 @@ sign_url = "https://c.tieba.baidu.com/c/c/forum/sign"
 tbs_url = "https://tieba.baidu.com/dc/common/tbs"
 # 尝试次数
 attempt_total=3
+# 颜色
+GREEN = '\033[92m'  # 绿色
+RED = '\033[91m'    # 红色
+RESET = '\033[0m'   # 重置颜色
