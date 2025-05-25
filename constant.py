@@ -13,3 +13,5 @@ attention_url = "https://tieba.baidu.com/f/like/mylike"
 sign_url = "https://c.tieba.baidu.com/c/c/forum/sign"
 # tbs
 tbs_url = "https://tieba.baidu.com/dc/common/tbs"
+# 尝试次数
+attempt_total=3
