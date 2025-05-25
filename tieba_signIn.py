@@ -24,8 +24,11 @@ def sign(cookie, favorites):
             }
             ret = client_sign(data, cookie)
             if ret == success_flag:
-                counts = counts + 1
+                counts[success_flag] += 1
+            elif ret == signed_flag:
+                counts[signed_flag] += 1
             elif ret == fail_flag:
+                counts[fail_flag] += 1
                 retry_favorites.append(favorite)
             time.sleep(rand_gen.uniform(0.3, 0.5))
         if retry_favorites and attempt < constant.attempt_total:
@@ -38,13 +41,18 @@ def sign(cookie, favorites):
     tbs = get_tbs(cookie)
     # 签到开始
     logger.info(f"签到开始，一共有{len(favorites)}页，{len(favorites)}个吧要签到！")
-    success_counts = 0
+    counts = {
+        success_flag: 0,
+        signed_flag: 0,
+        fail_flag: 0,
+    }
     # 创建一个随机数生成器
     rand_gen = random.Random()
     # 逐一签到，并停顿0.3-0.5秒
-    do_sign(favorites, success_counts, 1)
-    logger.info(f"{constant.GREEN}签到成功贴吧数量：{success_counts}{constant.RESET}, "
-                f"{constant.RED}签到失败贴吧数量：{tbs.count() - success_counts}{constant.RESET}")
+    do_sign(favorites, counts, 1)
+    logger.info(f"{constant.GREEN}签到成功贴吧数量：{counts.get(success_flag)}{constant.RESET}, "
+                f"{constant.YELLOW}签到过贴吧数量：{counts.get(signed_flag)}{constant.RESET}, "
+                f"{constant.RED}签到失败贴吧数量：{counts.get(fail_flag)}{constant.RESET}")
 
 
 # 获取tbs

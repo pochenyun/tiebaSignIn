@@ -17,5 +17,6 @@ tbs_url = "https://tieba.baidu.com/dc/common/tbs"
 attempt_total=3
 # 颜色
 GREEN = '\033[92m'  # 绿色
+YELLOW = '\033[33m' # 黄色
 RED = '\033[91m'    # 红色
 RESET = '\033[0m'   # 重置颜色
