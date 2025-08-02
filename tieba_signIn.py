@@ -57,14 +57,29 @@ def sign(cookie, favorites):
 
 # 获取tbs
 def get_tbs(cookie):
-    req = requests.get(constant.tbs_url, headers=constant.headers_sign, cookies=cookie)
-    tbs_url_res = json.loads(req.text)
-    if tbs_url_res["is_login"] == 1:
-        logger.info("获取TBS成功")
-        return tbs_url_res["tbs"]
-    else:
-        logger.info("获取TBS失败")
-        raise Exception("登录失败")
+    attempt = 0
+    rand_gen = random.Random()
+    
+    while attempt < constant.attempt_total:
+        try:
+            req = requests.get(constant.tbs_url, headers=constant.headers_sign, cookies=cookie)
+            tbs_url_res = json.loads(req.text)
+            if tbs_url_res["is_login"] == 1:
+                logger.info("获取TBS成功")
+                return tbs_url_res["tbs"]
+            else:
+                logger.warning(f"第 {attempt + 1} 次获取TBS失败")
+        except Exception as e:
+            logger.error(f"第 {attempt + 1} 次获取TBS出错: {str(e)}")
+        
+        attempt += 1
+        if attempt < constant.attempt_total:
+            sleep_time = rand_gen.uniform(3, 6)  # 随机等待3-6秒
+            logger.info(f"等待 {sleep_time:.1f} 秒后进行第 {attempt + 1} 次重试")
+            time.sleep(sleep_time)
+    
+    logger.error(f"获取TBS失败，已重试 {constant.attempt_total} 次")
+    raise Exception("登录失败")
 
 
 # 签到模块
