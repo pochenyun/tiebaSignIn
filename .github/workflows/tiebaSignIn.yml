@@ -2,9 +2,9 @@ name: Tieba Sign In
 
 on:
   workflow_dispatch:
-  # 北京时间 6:30 (UTC+8)
+  # 北京时间 15:30 (UTC+8)
   schedule:
-    - cron: '30 22 * * *'
+    - cron: '30 7 * * *'
 
 jobs:
   build:
