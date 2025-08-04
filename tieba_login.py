@@ -45,4 +45,4 @@ def login():
         except Exception as e:
             logger.error(f"登录过程中出错: {e}")
     else:
-        logger.info(f"错误码：{req.status_code}")
+        logger.info(f"错误码：{req.status_code}, 错误信息：{req.text}")
