@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 20 * * *'  # 第 1 次 (UTC 20:30 = 北京时间 4:30)
-    - cron: '30 8 * * *'   # 第 2 次 (UTC 08:30 = 北京时间 16:30)
+    - cron: '30 4 * * *'   # 第 2 次 (UTC 04:30 = 北京时间 12:30)
+    - cron: '30 12 * * *'  # 第 3 次 (UTC 12:30 = 北京时间 20:30)
 
 jobs:
   build:
@@ -27,11 +28,13 @@ jobs:
 
       - name: 确定第几次运行
         run: |
-          if [ "${{ github.event.schedule }}" == "30 20 * * *" ]; then
-            echo "第一次运行 RUN_NUMBER=1" >> $GITHUB_ENV
-          else
-            echo "第二次运行 RUN_NUMBER=2" >> $GITHUB_ENV
-          fi
+          case "${{ github.event.schedule }}" in
+            "30 20 * * *") echo "第 1 次运行 RUN_NUMBER=1" >> $GITHUB_ENV ;;
+            "30 4 * * *")  echo "第 2 次运行 RUN_NUMBER=2" >> $GITHUB_ENV ;;
+            "30 12 * * *") echo "第 3 次运行 RUN_NUMBER=3" >> $GITHUB_ENV ;;
+            *)             echo "RUN_NUMBER=未知" >> $GITHUB_ENV ;;
+          esac
+          echo -e "\033[1;36m本次运行编号: $RUN_NUMBER\033[0m"
 
       - name: 运行 Python 脚本
         run: python run.py
