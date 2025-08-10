@@ -45,5 +45,7 @@ jobs:
             esac
           fi
 
+          echo -e "\033[1;36m本次运行编号: $RUN_NUMBER\033[0m"
+
       - name: 运行 Python 脚本
         run: python run.py
