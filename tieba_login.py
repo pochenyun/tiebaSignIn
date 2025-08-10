@@ -76,7 +76,7 @@ def get_headers():
     }
 
 
-def make_request(url, cookies, max_retries=3):
+def make_request(url, cookies, max_retries=5):
     for attempt in range(max_retries):
         try:
             # 随机延时0.5-2秒
