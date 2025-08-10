@@ -28,13 +28,22 @@ jobs:
 
       - name: 确定第几次运行
         run: |
-          case "${{ github.event.schedule }}" in
-            "30 20 * * *") echo "第 1 次运行 RUN_NUMBER=1" >> $GITHUB_ENV ;;
-            "30 4 * * *")  echo "第 2 次运行 RUN_NUMBER=2" >> $GITHUB_ENV ;;
-            "30 12 * * *") echo "第 3 次运行 RUN_NUMBER=3" >> $GITHUB_ENV ;;
-            *)             echo "RUN_NUMBER=未知" >> $GITHUB_ENV ;;
-          esac
-          echo -e "\033[1;36m本次运行编号: $RUN_NUMBER\033[0m"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # 手动触发
+            if [ -n "${{ github.event.inputs.RUN_NUMBER }}" ]; then
+              echo "RUN_NUMBER=${{ github.event.inputs.RUN_NUMBER }}" >> $GITHUB_ENV
+            else
+              echo "RUN_NUMBER=未知" >> $GITHUB_ENV
+            fi
+          else
+            # 定时触发
+            case "${{ github.event.schedule }}" in
+              "30 20 * * *") echo "RUN_NUMBER=1" >> $GITHUB_ENV ;;
+              "30 4 * * *")  echo "RUN_NUMBER=2" >> $GITHUB_ENV ;;
+              "30 12 * * *") echo "RUN_NUMBER=3" >> $GITHUB_ENV ;;
+              *)             echo "RUN_NUMBER=未知" >> $GITHUB_ENV ;;
+            esac
+          fi
 
       - name: 运行 Python 脚本
         run: python run.py
